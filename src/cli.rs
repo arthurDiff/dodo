@@ -40,6 +40,8 @@ impl DoDo {
     }
 }
 
+// trait DoDoArgs {}
+
 #[cfg(test)]
 mod tests {
     use clap::CommandFactory;
