@@ -1,3 +1,25 @@
+use cli::DoDo;
+
+mod cli;
+
+/// Features for dodo
+///   run a command (or multiple concurrently)
+///   save new command
+///     - from typed string
+///     - from file
+///     - from other command exec files like makefile (maybe)
+///   delete command
+///   list command
+///   settings for concurrent execution (maybe parellel) or others
+///   dodo dance
+///
+/// Need
+///   sqlite or plain text storage
+///   config parser
+///   thread pool
+///   
 fn main() {
-    println!("is it Dodo or dodo");
+    let cli = DoDo::run();
+
+    println!("this is running---{:?}", cli);
 }
