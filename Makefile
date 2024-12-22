@@ -1,5 +1,5 @@
 run:
-	cargo install --path . && dodo $(command) 
+	cargo install --path . && dodo $(args) 
 watch:
 	cargo watch -x run
 watch-check:

@@ -1,6 +1,11 @@
 use cli::DoDo;
 
+pub use crate::error::Error;
+pub use crate::result::Result;
+
 mod cli;
+mod error;
+mod result;
 
 /// Features for dodo
 ///   run a command (or multiple concurrently)

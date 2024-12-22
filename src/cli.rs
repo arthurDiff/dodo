@@ -11,10 +11,10 @@ mod delete;
 mod list;
 mod run;
 mod save;
-
+//https://docs.rs/clap/latest/clap/_derive/index.html
 #[derive(Debug, Parser)]
 #[command(name = "dodo")]
-#[command(version, about)]
+#[command(version)]
 pub struct DoDo {
     #[command(subcommand)]
     dodo: DoDoCommands,
@@ -40,7 +40,10 @@ impl DoDo {
     }
 }
 
-// trait DoDoArgs {}
+pub trait DoDoArgs {
+    #[allow(dead_code)]
+    fn execute(&self) -> crate::Result<()>;
+}
 
 #[cfg(test)]
 mod tests {
