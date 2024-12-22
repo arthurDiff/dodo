@@ -9,3 +9,7 @@ clap = { version = "4.5.23", default-features = false, features = [
   "help",
   "derive",
 ] }
+serde = { version = "1.0.216", features = ["derive"] }
+serde_json = { version = "1.0.134", default-features = false, features = [
+  "std",
+] }

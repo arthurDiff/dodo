@@ -5,6 +5,7 @@ pub use crate::result::Result;
 
 mod cli;
 mod error;
+mod parser;
 mod result;
 
 /// Features for dodo
