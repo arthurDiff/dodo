@@ -3,7 +3,7 @@
     <h1>DoDo (possibly bird)</h1>
   </p>
   <p>
-    Do what I gotta do
+    Do what You gotta do
   </p>
 </div>
 
