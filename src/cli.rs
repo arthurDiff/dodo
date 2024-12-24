@@ -1,16 +1,19 @@
 use clap::{Parser, Subcommand};
 // internal
 use about::AboutArgs;
+use config::ConfigArgs;
 use delete::DeleteArgs;
 use list::ListArgs;
 use run::RunArgs;
 use save::SaveArgs;
 
 mod about;
+mod config;
 mod delete;
 mod list;
 mod run;
 mod save;
+
 //https://docs.rs/clap/latest/clap/_derive/index.html
 #[derive(Debug, Parser)]
 #[command(name = "dodo")]
@@ -30,6 +33,8 @@ enum DoDoCommands {
     Delete(DeleteArgs),
     /// List saved commands
     List(ListArgs),
+    /// Read or Write Config
+    Config(ConfigArgs),
     /// DoDo dance
     About(AboutArgs),
 }
