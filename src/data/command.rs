@@ -3,12 +3,16 @@ const COMMAND_FILE_PATH: &str = "dodo_config.json";
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Commands(std::collections::HashMap<String, String>);
 
-impl super::DoDoData for Commands {
+impl Commands {
     fn read() -> crate::Result<Self> {
         todo!()
     }
 
-    fn write(&self) -> crate::Result<()> {
+    fn add(&self) -> crate::Result<()> {
+        todo!()
+    }
+
+    fn remove(&self) -> crate::Result<()> {
         todo!()
     }
 }

@@ -11,7 +11,7 @@ impl Default for Config {
     }
 }
 
-impl super::DoDoData for Config {
+impl Config {
     fn read() -> crate::Result<Self> {
         match std::fs::read_to_string(CONFIG_FILE_PATH) {
             Ok(config_str) => serde_json::from_str::<Config>(&config_str)

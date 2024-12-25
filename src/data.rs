@@ -21,10 +21,3 @@ where
         )
         .map_err(crate::Error::IOError)
 }
-
-pub trait DoDoData {
-    fn read() -> crate::Result<Self>
-    where
-        Self: std::marker::Sized;
-    fn write(&self) -> crate::Result<()>;
-}
