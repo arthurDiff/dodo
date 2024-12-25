@@ -1,21 +1,9 @@
-const COMMAND_FILE_PATH: &str = "dodo_config.json";
+pub const DEFAULT_COMMAND_FILE_PATH: &str = "dodo_config.json";
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Commands(std::collections::HashMap<String, String>);
 
-impl Commands {
-    fn read() -> crate::Result<Self> {
-        todo!()
-    }
-
-    fn add(&self) -> crate::Result<()> {
-        todo!()
-    }
-
-    fn remove(&self) -> crate::Result<()> {
-        todo!()
-    }
-}
+impl super::DoDoData for Commands {}
 
 impl std::ops::Deref for Commands {
     type Target = std::collections::HashMap<String, String>;
