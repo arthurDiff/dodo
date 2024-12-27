@@ -4,8 +4,8 @@ use std::io::Write;
 mod command;
 mod config;
 
-pub use command::Commands;
-pub use config::Config;
+pub use command::*;
+pub use config::*;
 
 pub trait DoDoData {
     fn read(path: &str) -> crate::Result<Self>
@@ -14,6 +14,7 @@ pub trait DoDoData {
     {
         read_json(path)
     }
+
     fn write(&self, path: &str) -> crate::Result<()>
     where
         Self: std::marker::Sized + Default + serde::Serialize + serde::de::DeserializeOwned,

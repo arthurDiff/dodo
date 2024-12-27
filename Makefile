@@ -7,7 +7,7 @@ watch-check:
 check:
 	cargo check
 test:
-	TEST_LOG=true cargo test | bunyan
+	cargo test
 coverage:
 	cargo tarpaulin --ignore-tests
 lint:

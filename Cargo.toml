@@ -7,6 +7,8 @@ edition = "2021"
 clap = { version = "4.5.23", default-features = false, features = [
   "std",
   "help",
+  "suggestions",
+  "usage",
   "derive",
 ] }
 serde = { version = "1.0.216", features = ["derive"] }

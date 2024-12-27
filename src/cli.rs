@@ -1,18 +1,18 @@
 use clap::{Parser, Subcommand};
 // internal
 use about::AboutArgs;
+use add::AddArgs;
 use config::ConfigArgs;
-use delete::DeleteArgs;
 use list::ListArgs;
+use remove::RemoveArgs;
 use run::RunArgs;
-use save::SaveArgs;
 
 mod about;
+mod add;
 mod config;
-mod delete;
 mod list;
+mod remove;
 mod run;
-mod save;
 
 //https://docs.rs/clap/latest/clap/_derive/index.html
 #[derive(Debug, Parser)]
@@ -25,12 +25,12 @@ pub struct DoDo {
 
 #[derive(Debug, Subcommand)]
 enum DoDoCommands {
-    /// Run a command or commands
+    /// Run command(s)
     Run(RunArgs),
-    /// Save new command
-    Save(SaveArgs),
-    /// Delete command
-    Delete(DeleteArgs),
+    /// Save new command(s)
+    Add(AddArgs),
+    /// Delete command(s)
+    Remove(RemoveArgs),
     /// List saved commands
     List(ListArgs),
     /// Read or Write Config
@@ -45,7 +45,7 @@ impl DoDo {
     }
 }
 
-pub trait DoDoArgs {
+trait DoDoArgs {
     #[allow(dead_code)]
     fn execute(&self) -> crate::Result<()>;
 }
