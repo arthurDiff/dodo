@@ -38,15 +38,25 @@ enum DoDoCommands {
     /// DoDo dance
     About(AboutArgs),
 }
-
+//https://github.com/clap-rs/clap/discussions/3715
 impl DoDo {
     pub fn run() -> Self {
         Self::parse()
     }
+
+    pub fn execute(&self) -> crate::Result<()> {
+        match &self.dodo {
+            DoDoCommands::Run(run_args) => todo!(),
+            DoDoCommands::Add(add_args) => todo!(),
+            DoDoCommands::Remove(remove_args) => todo!(),
+            DoDoCommands::List(list_args) => list_args.execute(),
+            DoDoCommands::Config(config_args) => config_args.execute(),
+            DoDoCommands::About(about_args) => todo!(),
+        }
+    }
 }
 
 trait DoDoArgs {
-    #[allow(dead_code)]
     fn execute(&self) -> crate::Result<()>;
 }
 

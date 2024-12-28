@@ -21,10 +21,18 @@ pub enum ConfigCommands {
 impl super::DoDoArgs for ConfigArgs {
     fn execute(&self) -> crate::Result<()> {
         match self.commands {
-            ConfigCommands::Get => println!("{}", Config::get(None)?),
+            ConfigCommands::Get => {
+                let config = Config::get(None)?;
+                println!(
+                    r#"----Config----
+                    thread_count: {}
+                    ---END---"#,
+                    config.thread_count
+                );
+            }
             ConfigCommands::Set { thread_count } => match Config::new(thread_count).set(None) {
                 Ok(_) => println!("Updated config successfully!"),
-                Err(err) => println!("Update failed with error:\n{}", err),
+                Err(err) => eprintln!("Update failed with error:\n{}", err),
             },
         }
         Ok(())

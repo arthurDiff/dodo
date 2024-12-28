@@ -21,11 +21,8 @@ mod result;
 ///
 /// Need
 ///   sqlite or plain text storage
-///   config parser
 ///   thread pool
 ///   
-fn main() {
-    let cli = DoDo::run();
-
-    println!("this is running---{:?}", cli);
+fn main() -> crate::Result<()> {
+    DoDo::run().execute()
 }

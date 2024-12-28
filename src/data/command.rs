@@ -14,15 +14,6 @@ impl Commands {
         self.write(path.unwrap_or(DEFAULT_COMMAND_FILE_PATH))
     }
 }
-impl std::fmt::Display for Commands {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "----Commands----")?;
-        for (k, v) in self.iter() {
-            writeln!(f, "{k} : {v}")?;
-        }
-        writeln!(f, "----END----")
-    }
-}
 
 impl DoDoData for Commands {}
 
