@@ -22,8 +22,8 @@ impl super::DoDoArgs for ConfigArgs {
         match &self.commands {
             Some(ConfigCommands::Set { thread_count }) => {
                 match Config::new(*thread_count).set(None) {
-                    Ok(_) => println!("Updated config successfully!"),
-                    Err(err) => eprintln!("Update failed with error: {}", err),
+                    Ok(_) => println!("{}", "Updated config successfully!".green()),
+                    Err(err) => eprintln!("Update failed with error: {}", err.to_string().red()),
                 }
             }
             None => {

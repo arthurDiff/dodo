@@ -6,10 +6,21 @@ pub struct Rgb(pub u8, pub u8, pub u8);
 pub trait Color {
     fn color_rgb(&self, foreground: Option<Rgb>, background: Option<Rgb>) -> String;
     fn color(&self, foreground: Option<u8>, background: Option<u8>) -> String;
-    fn red(&self) -> String;
-    fn yellow(&self) -> String;
-    fn blue(&self) -> String;
-    fn purple(&self) -> String;
+    fn red(&self) -> String {
+        self.color(Some(91), None)
+    }
+    fn yellow(&self) -> String {
+        self.color(Some(93), None)
+    }
+    fn blue(&self) -> String {
+        self.color(Some(94), None)
+    }
+    fn green(&self) -> String {
+        self.color(Some(92), None)
+    }
+    fn purple(&self) -> String {
+        self.color(Some(95), None)
+    }
 }
 
 impl Color for str {
@@ -62,22 +73,6 @@ impl Color for str {
             self
         )
     }
-
-    fn red(&self) -> String {
-        self.color(Some(31), None)
-    }
-
-    fn yellow(&self) -> String {
-        self.color(Some(93), None)
-    }
-
-    fn blue(&self) -> String {
-        self.color(Some(94), None)
-    }
-
-    fn purple(&self) -> String {
-        self.color(Some(35), None)
-    }
 }
 
 impl Color for String {
@@ -87,21 +82,5 @@ impl Color for String {
 
     fn color(&self, foreground: Option<u8>, background: Option<u8>) -> String {
         str::color(self, foreground, background)
-    }
-
-    fn red(&self) -> String {
-        str::red(self)
-    }
-
-    fn yellow(&self) -> String {
-        str::yellow(self)
-    }
-
-    fn blue(&self) -> String {
-        str::blue(self)
-    }
-
-    fn purple(&self) -> String {
-        str::purple(self)
     }
 }
