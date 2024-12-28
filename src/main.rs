@@ -7,6 +7,7 @@ mod cli;
 mod data;
 mod error;
 mod result;
+mod text;
 
 /// Features for dodo
 ///   run a command (or multiple concurrently)
@@ -22,7 +23,6 @@ mod result;
 /// Need
 ///   sqlite or plain text storage
 ///   thread pool
-///   
 fn main() -> crate::Result<()> {
     DoDo::run().execute()
 }

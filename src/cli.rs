@@ -46,12 +46,12 @@ impl DoDo {
 
     pub fn execute(&self) -> crate::Result<()> {
         match &self.dodo {
-            DoDoCommands::Run(run_args) => todo!(),
-            DoDoCommands::Add(add_args) => todo!(),
-            DoDoCommands::Remove(remove_args) => todo!(),
+            DoDoCommands::Run(run_args) => run_args.execute(),
+            DoDoCommands::Add(add_args) => add_args.execute(),
+            DoDoCommands::Remove(remove_args) => remove_args.execute(),
             DoDoCommands::List(list_args) => list_args.execute(),
             DoDoCommands::Config(config_args) => config_args.execute(),
-            DoDoCommands::About(about_args) => todo!(),
+            DoDoCommands::About(about_args) => about_args.execute(),
         }
     }
 }
