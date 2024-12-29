@@ -64,6 +64,6 @@ mod tests {
         }
 
         // cleanup
-        let _ = std::fs::remove_file(test_file_path);
+        std::fs::remove_file(test_file_path).unwrap();
     }
 }

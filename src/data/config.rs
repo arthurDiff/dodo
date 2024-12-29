@@ -49,6 +49,6 @@ mod tests {
         assert_eq!(updated_config.thread_count, 8);
 
         // cleanup
-        let _ = std::fs::remove_file(test_file_path);
+        std::fs::remove_file(test_file_path).unwrap();
     }
 }
