@@ -6,10 +6,12 @@ const DEFAULT_COMMAND_FILE_PATH: &str = "dodo_config.json";
 pub struct Commands(std::collections::HashMap<String, String>);
 
 impl Commands {
+    /// If None will use default path
     pub fn get(path: Option<&str>) -> crate::Result<Self> {
         Self::read(path.unwrap_or(DEFAULT_COMMAND_FILE_PATH))
     }
 
+    /// If None will use default path
     pub fn set(&self, path: Option<&str>) -> crate::Result<()> {
         self.write(path.unwrap_or(DEFAULT_COMMAND_FILE_PATH))
     }

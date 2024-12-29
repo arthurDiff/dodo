@@ -1,6 +1,9 @@
 use clap::{Args, Subcommand};
 
-use crate::{data::Config, text::Color};
+use crate::{
+    data::Config,
+    text::{Color, Font},
+};
 
 #[derive(Debug, Args)]
 pub struct ConfigArgs {
@@ -21,7 +24,9 @@ impl super::DoDoArgs for ConfigArgs {
     fn execute(&self) -> crate::Result<()> {
         match &self.commands {
             Some(ConfigCommands::Set { thread_count }) => {
-                match Config::new(*thread_count).set(None) {
+                let mut config = Config::get(None)?;
+                config.thread_count = *thread_count;
+                match config.set(None) {
                     Ok(_) => println!("{}", "Updated config successfully!".green()),
                     Err(err) => eprintln!("Update failed with error: {}", err.to_string().red()),
                 }
@@ -30,7 +35,7 @@ impl super::DoDoArgs for ConfigArgs {
                 let config = Config::get(None)?;
                 println!(
                     "{}\nthread_count: {}\n{}",
-                    "----DoDo Config----".yellow(),
+                    "DoDo Config".yellow().bold().underline(),
                     config.thread_count,
                     "----END----".yellow()
                 );

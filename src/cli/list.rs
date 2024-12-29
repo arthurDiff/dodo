@@ -1,5 +1,7 @@
 use clap::Args;
 
+use crate::text::{Color, Font};
+
 #[derive(Debug, Args)]
 pub struct ListArgs;
 
@@ -10,7 +12,12 @@ impl super::DoDoArgs for ListArgs {
         for (k, v) in commands.iter() {
             l_str += &format!("\n{k} : {v}");
         }
-        println!("----Commands----\n{}\n----END----", l_str);
+        println!(
+            "{}\n{}\n{}",
+            "DoDo Commands".yellow().bold().underline(),
+            l_str,
+            "----END----".yellow()
+        );
         Ok(())
     }
 }

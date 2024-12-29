@@ -8,14 +8,12 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(thread_count: u8) -> Self {
-        Self { thread_count }
-    }
-
+    /// If None will use default path
     pub fn get(path: Option<&str>) -> crate::Result<Self> {
         Self::read(path.unwrap_or(DEFAULT_CONFIG_FILE_PATH))
     }
 
+    /// If None will use default path
     pub fn set(&self, path: Option<&str>) -> crate::Result<()> {
         self.write(path.unwrap_or(DEFAULT_CONFIG_FILE_PATH))
     }
