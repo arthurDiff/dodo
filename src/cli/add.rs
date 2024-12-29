@@ -17,12 +17,12 @@ pub struct AddArgs {
 
 impl super::DoDoArgs for AddArgs {
     fn execute(&self) -> crate::Result<()> {
-        self.add_command(None)
+        self.add_commands(None)
     }
 }
 
 impl AddArgs {
-    fn add_command(&self, path: Option<&str>) -> crate::Result<()> {
+    fn add_commands(&self, path: Option<&str>) -> crate::Result<()> {
         let mut commands = Commands::get(path)?;
         commands.insert(self.name.clone(), self.command.clone());
         match commands.set(path) {
@@ -77,7 +77,7 @@ mod tests {
 
         println!("{:#?}", new_commands);
         for arg in &new_commands {
-            let _ = arg.add_command(Some(test_file));
+            let _ = arg.add_commands(Some(test_file));
         }
 
         let saved_command = Commands::get(Some(test_file)).unwrap();

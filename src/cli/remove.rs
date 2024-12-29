@@ -5,6 +5,12 @@ pub struct RemoveArgs {}
 
 impl super::DoDoArgs for RemoveArgs {
     fn execute(&self) -> crate::Result<()> {
+        self.remove_command()
+    }
+}
+
+impl RemoveArgs {
+    fn remove_command(&self) -> crate::Result<()> {
         todo!()
     }
 }

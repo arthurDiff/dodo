@@ -19,3 +19,21 @@ impl std::fmt::Display for Error {
 }
 
 impl std::error::Error for Error {}
+
+impl From<std::io::Error> for Error {
+    fn from(value: std::io::Error) -> Self {
+        Self::IOError(value)
+    }
+}
+
+impl From<clap::Error> for Error {
+    fn from(value: clap::Error) -> Self {
+        Self::CliError(value)
+    }
+}
+
+impl From<serde_json::Error> for Error {
+    fn from(value: serde_json::Error) -> Self {
+        Self::SerializationError(value)
+    }
+}

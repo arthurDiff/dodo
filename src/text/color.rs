@@ -26,9 +26,7 @@ pub trait Color {
 impl Color for str {
     /// 8 bit rgb
     fn color_rgb(&self, foreground: Option<Rgb>, background: Option<Rgb>) -> String {
-        if foreground.is_none() && background.is_none() {
-            return self.to_string();
-        }
+        assert!(foreground.is_some() || background.is_some());
         let (fg_color, bg_color) = (
             foreground.map(|fg| format!("38;2;{};{};{}", fg.0, fg.1, fg.2)),
             background.map(|bg| format!("48;2;{};{};{}", bg.0, bg.1, bg.2)),
@@ -52,11 +50,10 @@ impl Color for str {
 
     /// 4 bit ANSI code
     fn color(&self, foreground: Option<u8>, background: Option<u8>) -> String {
-        if foreground.is_none_or(|b| !(30..=37).contains(&b) && !(90..97).contains(&b))
-            && background.is_none_or(|b| !(40..=47).contains(&b) && !(100..107).contains(&b))
-        {
-            return self.to_string();
-        }
+        assert!(
+            foreground.is_some_and(|b| (30..=37).contains(&b) || (90..97).contains(&b))
+                || background.is_some_and(|b| (40..=47).contains(&b) || (100..107).contains(&b))
+        );
 
         if foreground.is_none() || background.is_none() {
             return format!(
