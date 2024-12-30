@@ -20,7 +20,9 @@ mod run;
 #[command(version)]
 pub struct DoDo {
     #[command(subcommand)]
-    dodo: DoDoCommands,
+    dodo: Option<DoDoCommands>,
+    #[command(flatten)]
+    run_args: RunArgs,
 }
 
 #[derive(Debug, Subcommand)]
@@ -38,6 +40,7 @@ enum DoDoCommands {
     /// DoDo dance
     About(AboutArgs),
 }
+
 //https://github.com/clap-rs/clap/discussions/3715
 impl DoDo {
     pub fn run() -> Self {
@@ -45,13 +48,17 @@ impl DoDo {
     }
 
     pub fn execute(&self) -> crate::Result<()> {
-        match &self.dodo {
-            DoDoCommands::Run(run_args) => run_args.execute(),
-            DoDoCommands::Add(add_args) => add_args.execute(),
-            DoDoCommands::Remove(remove_args) => remove_args.execute(),
-            DoDoCommands::List(list_args) => list_args.execute(),
-            DoDoCommands::Config(config_args) => config_args.execute(),
-            DoDoCommands::About(about_args) => about_args.execute(),
+        if let Some(cmd) = &self.dodo {
+            match cmd {
+                DoDoCommands::Run(run_args) => run_args.execute(),
+                DoDoCommands::Add(add_args) => add_args.execute(),
+                DoDoCommands::Remove(remove_args) => remove_args.execute(),
+                DoDoCommands::List(list_args) => list_args.execute(),
+                DoDoCommands::Config(config_args) => config_args.execute(),
+                DoDoCommands::About(about_args) => about_args.execute(),
+            }
+        } else {
+            self.run_args.execute()
         }
     }
 }

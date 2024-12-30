@@ -2,6 +2,7 @@ use clap::Args;
 
 use crate::text::{Color, Font};
 
+// add optional arg to export command file
 #[derive(Debug, Args)]
 pub struct ListArgs;
 
@@ -9,7 +10,7 @@ impl super::DoDoArgs for ListArgs {
     fn execute(&self) -> crate::Result<()> {
         let cmds = self.list_commands_as_lines()?;
         println!(
-            "{}{}{}",
+            "{}\n{}{}",
             "DoDo Commands Start".yellow().underline(),
             cmds,
             "DoDo Commands END".yellow().underline()

@@ -7,7 +7,7 @@ use crate::{
 
 #[derive(Debug, Args)]
 pub struct RemoveArgs {
-    #[arg(short, long, num_args=1.., use_value_delimiter=true, value_delimiter=' ')]
+    #[arg(num_args=1.., use_value_delimiter=true, value_delimiter=' ', required = true )]
     names: Vec<String>,
 }
 
@@ -27,9 +27,11 @@ impl RemoveArgs {
             .filter(|n| {
                 if commands.remove(*n).is_none() {
                     println!("DoDo commands doesn't contain: {}", n.yellow().bold());
-                    return false;
+                    false
+                } else {
+                    println!("DoDo successfully removed command: {}", n.yellow().bold());
+                    true
                 }
-                true
             })
             .count()
             == 0
