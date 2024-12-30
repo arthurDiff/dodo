@@ -1,3 +1,5 @@
+use std::process::Command;
+
 use clap::Args;
 
 use crate::{
@@ -50,8 +52,19 @@ impl RunArgs {
     }
 
     fn run_command(cmd_str: &str) -> crate::Result<()> {
-        let cmd = cmd_str.split_whitespace().collect::<String>();
-        println!("{}", cmd);
+        // get config to use for shell
+        let _output = if cfg!(target_os = "windows") {
+            Command::new("cmd")
+                .args(["/C", cmd_str])
+                .output()
+                .expect("Failed to execute process")
+        } else {
+            Command::new("sh")
+                .arg("-c")
+                .arg(cmd_str)
+                .output()
+                .expect("Failed to execute process")
+        };
 
         Ok(())
     }
