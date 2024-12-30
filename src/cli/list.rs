@@ -9,10 +9,10 @@ impl super::DoDoArgs for ListArgs {
     fn execute(&self) -> crate::Result<()> {
         let cmds = self.list_commands_as_lines()?;
         println!(
-            "{}\n{}\n{}",
-            "DoDo Commands".yellow().bold().underline(),
+            "{}{}{}",
+            "DoDo Commands Start".yellow().underline(),
             cmds,
-            "----END----".yellow()
+            "DoDo Commands END".yellow().underline()
         );
         Ok(())
     }
@@ -23,7 +23,7 @@ impl ListArgs {
         let commands = crate::data::Commands::get(None)?;
         let mut l_str = String::new();
         for (k, v) in commands.iter() {
-            l_str += &format!("\n{k} : {v}");
+            l_str += &format!("{k} : {v}\n");
         }
         Ok(l_str)
     }

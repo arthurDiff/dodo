@@ -15,6 +15,7 @@ pub struct AddArgs {
     command: String,
 }
 
+// Need ways to add multiple at once
 impl super::DoDoArgs for AddArgs {
     fn execute(&self) -> crate::Result<()> {
         self.add_commands(None)
@@ -27,8 +28,8 @@ impl AddArgs {
         commands.insert(self.name.clone(), self.command.clone());
         match commands.set(path) {
             Ok(_) => println!(
-                "{}\n\tTry: {}",
-                "New command has been added:".green(),
+                "{} {}",
+                "New command has been added (Try):".green(),
                 format!("dodo run {}", self.name).bold()
             ),
             Err(err) => eprintln!(
@@ -75,19 +76,22 @@ mod tests {
             })
             .collect::<Vec<AddArgs>>();
 
-        println!("{:#?}", new_commands);
         for arg in &new_commands {
             let _ = arg.add_commands(Some(test_file));
         }
 
-        let saved_command = Commands::get(Some(test_file)).unwrap();
+        let saved_command =
+            Commands::get(Some(test_file)).expect("Failed saving command for adding new command");
 
-        println!("{:#?}------", new_commands);
         for arg in &new_commands {
             assert_command_exists!(saved_command.get(&arg.name), arg.name, arg.command);
         }
 
-        // cleanup
-        std::fs::remove_file(test_file).unwrap();
+        std::fs::remove_file(test_file).unwrap_or_else(|e| {
+            panic!(
+                "Expected to cleanup testfile: {}, but got: {}",
+                test_file, e
+            )
+        });
     }
 }

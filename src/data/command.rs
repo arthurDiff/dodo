@@ -1,6 +1,6 @@
 use super::DoDoData;
 
-const DEFAULT_COMMAND_FILE_PATH: &str = "dodo_config.json";
+const DEFAULT_COMMAND_FILE_PATH: &str = "dodo_commands.json";
 
 #[derive(Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Commands(std::collections::HashMap<String, String>);
