@@ -15,6 +15,7 @@ serde = { version = "1.0.216", features = ["derive"] }
 serde_json = { version = "1.0.134", default-features = false, features = [
   "std",
 ] }
+sysinfo = { version = "0.33.1", default-features = false, features = ["system"] }
 
 [dev-dependencies]
 fake = "3.1.0"

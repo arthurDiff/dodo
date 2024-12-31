@@ -6,6 +6,8 @@ check:
 	cargo check
 test:
 	cargo test
+release:
+	cargo build --release
 coverage:
 	cargo tarpaulin --ignore-tests
 lint:

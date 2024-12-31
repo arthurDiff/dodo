@@ -7,16 +7,11 @@ mod cli;
 mod data;
 mod error;
 mod result;
+mod shellinfo;
 mod text;
 
 /// Features for dodo
 ///   run a command (or multiple concurrently)
-///   save new command
-///     - from typed string
-///     - from file
-///     - from other command exec files like makefile (maybe)
-///   delete command
-///   list command
 ///   settings for concurrent execution (maybe parellel) or others
 ///   dodo dance
 ///
