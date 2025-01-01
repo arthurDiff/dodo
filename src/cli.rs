@@ -2,14 +2,12 @@ use clap::{Parser, Subcommand};
 // internal
 use about::AboutArgs;
 use add::AddArgs;
-use config::ConfigArgs;
 use list::ListArgs;
 use remove::RemoveArgs;
 use run::RunArgs;
 
 mod about;
 mod add;
-mod config;
 mod list;
 mod remove;
 mod run;
@@ -35,8 +33,6 @@ enum DoDoCommands {
     Remove(RemoveArgs),
     /// List saved commands
     List(ListArgs),
-    /// Read or Write Config
-    Config(ConfigArgs),
     /// DoDo dance
     About(AboutArgs),
 }
@@ -54,7 +50,6 @@ impl DoDo {
                 DoDoCommands::Add(add_args) => add_args.execute(),
                 DoDoCommands::Remove(remove_args) => remove_args.execute(),
                 DoDoCommands::List(list_args) => list_args.execute(),
-                DoDoCommands::Config(config_args) => config_args.execute(),
                 DoDoCommands::About(about_args) => about_args.execute(),
             }
         } else {

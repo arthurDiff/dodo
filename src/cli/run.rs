@@ -12,8 +12,8 @@ use crate::{
     text::{Color, Font},
 };
 
-// 22 fps
-const FRAME_DELAY: u64 = 40;
+// 30 fps
+const FRAME_DELAY: u64 = 33;
 const LOADING_CHAR: [char; 14] = [
     '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█', '▇', '▆', '▅', '▄', '▃', '▁',
 ];
@@ -58,10 +58,21 @@ impl super::DoDoArgs for RunArgs {
 impl RunArgs {
     fn run_commands_async(
         &self,
-        _path: Option<&str>,
-        _sinfo: shellinfo::ShellInfo,
+        path: Option<&str>,
+        sinfo: shellinfo::ShellInfo,
     ) -> crate::Result<()> {
-        todo!()
+        use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
+
+        let cmds = Commands::get(path)?;
+        self.names.par_iter().for_each(|n| {
+            let Some(cmd) = cmds.get(n) else {
+                println!("DoDo commands doesn't contain: {}", n.yellow().bold());
+                return;
+            };
+            // std::iter::repeat("\n").take(idx).collect::<String>();
+            self.run_command(n, cmd, sinfo);
+        });
+        Ok(())
     }
 
     fn run_commands_sync(
@@ -75,36 +86,40 @@ impl RunArgs {
                 println!("DoDo commands doesn't contain: {}", n.yellow().bold());
                 continue;
             };
-
-            match if self.log_while {
-                Self::run_command_w_log(n, cmd, sinfo)
-            } else {
-                Self::run_command(n, cmd, sinfo)
-            } {
-                Ok(output) => {
-                    if self.log_output && !self.log_while {
-                        println!(
-                            "DoDo Command ({}) Ended with {}\n{}\n{}",
-                            n.green(),
-                            output.status,
-                            "output:".yellow(),
-                            if output.status.success() {
-                                String::from_utf8_lossy(&output.stdout)
-                            } else {
-                                String::from_utf8_lossy(&output.stderr)
-                            }
-                        );
-                    } else {
-                        println!("DoDo Command ({}) Ended with {}", n.green(), output.status);
-                    }
-                }
-                Err(err) => eprintln!("DoDo Command Failed With: {}", err.to_string().red()),
-            }
+            self.run_command(n, cmd, sinfo);
         }
         Ok(())
     }
 
-    fn run_command(
+    fn run_command(&self, n: &str, cmd: &str, sinfo: shellinfo::ShellInfo) {
+        match if self.log_while {
+            Self::run_command_inherited(n, cmd, sinfo)
+        } else {
+            Self::run_command_piped(n, cmd, sinfo)
+        } {
+            Ok(output) => {
+                if self.log_output && !self.log_while {
+                    println!(
+                        "DoDo Command ({}) Ended with {}\n{}\n{}",
+                        n.green(),
+                        output.status,
+                        "Output".yellow().underline(),
+                        if output.status.success() {
+                            String::from_utf8_lossy(&output.stdout)
+                        } else {
+                            String::from_utf8_lossy(&output.stderr)
+                        }
+                    );
+                } else {
+                    println!("DoDo Command ({}) Ended with {}", n.green(), output.status);
+                }
+            }
+            Err(err) => eprintln!("DoDo Command Failed With: {}", err.to_string().red()),
+        }
+    }
+
+    /// Doesn't log while command is running
+    fn run_command_piped(
         name: &str,
         command: &str,
         sinfo: shellinfo::ShellInfo,
@@ -120,9 +135,10 @@ impl RunArgs {
         let mut start_inst = Instant::now();
         while proc.try_wait().is_ok_and(|p| p.is_none()) {
             print!(
-                "\rDoDo Command ({}) Running {}",
+                "DoDo Command ({}) Running {}\r",
                 name.green(),
-                LOADING_CHAR[idx % 14]
+                // just gonna slow down by deviding instead delaying framerate
+                LOADING_CHAR[idx % 28 / 2]
             );
             std::io::stdout().flush()?;
             let duration_since = Instant::now().duration_since(start_inst);
@@ -130,15 +146,14 @@ impl RunArgs {
                 std::thread::sleep(Duration::from_millis(FRAME_DELAY) - duration_since)
             }
             start_inst = Instant::now();
-            idx = idx.wrapping_add(1);
+            idx = idx.wrapping_add(1)
         }
 
-        print!("\r");
-        std::io::stdout().flush()?;
         Ok(proc.wait_with_output()?)
     }
 
-    fn run_command_w_log(
+    /// Logs to stdout while command is running
+    fn run_command_inherited(
         name: &str,
         command: &str,
         sinfo: shellinfo::ShellInfo,

@@ -2,10 +2,8 @@ use std::io::Write;
 
 // Initial Impl using Json
 mod command;
-mod config;
 
 pub use command::*;
-pub use config::*;
 
 pub trait DoDoData {
     fn read(path: &str) -> crate::Result<Self>
