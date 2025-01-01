@@ -14,8 +14,9 @@ use crate::{
 
 // 30 fps
 const FRAME_DELAY: u64 = 33;
-const LOADING_CHAR: [char; 14] = [
-    '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█', '▇', '▆', '▅', '▄', '▃', '▁',
+const LOADING_CHAR: [char; 28] = [
+    '▁', '▁', '▂', '▂', '▃', '▃', '▄', '▄', '▅', '▅', '▆', '▆', '▇', '▇', '█', '█', '▇', '▇', '▆',
+    '▆', '▅', '▅', '▄', '▄', '▃', '▃', '▁', '▁',
 ];
 
 // need output log func (need to access child process for stio)
@@ -69,8 +70,7 @@ impl RunArgs {
                 println!("DoDo commands doesn't contain: {}", n.yellow().bold());
                 return;
             };
-            // std::iter::repeat("\n").take(idx).collect::<String>();
-            self.run_command(n, cmd, sinfo);
+            self.run_command(n, cmd, sinfo, false);
         });
         Ok(())
     }
@@ -86,16 +86,16 @@ impl RunArgs {
                 println!("DoDo commands doesn't contain: {}", n.yellow().bold());
                 continue;
             };
-            self.run_command(n, cmd, sinfo);
+            self.run_command(n, cmd, sinfo, true);
         }
         Ok(())
     }
 
-    fn run_command(&self, n: &str, cmd: &str, sinfo: shellinfo::ShellInfo) {
+    fn run_command(&self, n: &str, cmd: &str, sinfo: shellinfo::ShellInfo, animate_piped: bool) {
         match if self.log_while {
             Self::run_command_inherited(n, cmd, sinfo)
         } else {
-            Self::run_command_piped(n, cmd, sinfo)
+            Self::run_command_piped(n, cmd, sinfo, animate_piped)
         } {
             Ok(output) => {
                 if self.log_output && !self.log_while {
@@ -123,6 +123,7 @@ impl RunArgs {
         name: &str,
         command: &str,
         sinfo: shellinfo::ShellInfo,
+        animate: bool,
     ) -> crate::Result<std::process::Output> {
         let mut proc = Command::new(sinfo.0)
             .arg(sinfo.1)
@@ -131,22 +132,26 @@ impl RunArgs {
             .stderr(Stdio::piped())
             .spawn()?;
 
-        let mut idx = 0;
-        let mut start_inst = Instant::now();
-        while proc.try_wait().is_ok_and(|p| p.is_none()) {
-            print!(
-                "DoDo Command ({}) Running {}\r",
-                name.green(),
-                // just gonna slow down by deviding instead delaying framerate
-                LOADING_CHAR[idx % 28 / 2]
-            );
-            std::io::stdout().flush()?;
-            let duration_since = Instant::now().duration_since(start_inst);
-            if Duration::from_millis(FRAME_DELAY) > duration_since {
-                std::thread::sleep(Duration::from_millis(FRAME_DELAY) - duration_since)
+        if animate {
+            let mut idx = 0;
+            let mut start_inst = Instant::now();
+            while proc.try_wait().is_ok_and(|p| p.is_none()) {
+                print!(
+                    "DoDo Command ({}) Running {}\r",
+                    name.green(),
+                    // just gonna slow down by deviding instead delaying framerate
+                    LOADING_CHAR[idx % 28]
+                );
+                std::io::stdout().flush()?;
+                let duration_since = Instant::now().duration_since(start_inst);
+                if Duration::from_millis(FRAME_DELAY) > duration_since {
+                    std::thread::sleep(Duration::from_millis(FRAME_DELAY) - duration_since)
+                }
+                start_inst = Instant::now();
+                idx = idx.wrapping_add(1)
             }
-            start_inst = Instant::now();
-            idx = idx.wrapping_add(1)
+        } else {
+            println!("DoDo Command ({}) Running...", name.green(),);
         }
 
         Ok(proc.wait_with_output()?)
@@ -159,8 +164,10 @@ impl RunArgs {
         sinfo: shellinfo::ShellInfo,
     ) -> crate::Result<std::process::Output> {
         println!("DoDo Command ({}) Running...", name.green());
-        // it will write to stdout or stderr while process is running;
-        let proc = Command::new(sinfo.0).arg(sinfo.1).arg(command).spawn()?;
-        Ok(proc.wait_with_output()?)
+        Ok(Command::new(sinfo.0)
+            .arg(sinfo.1)
+            .arg(command)
+            .spawn()?
+            .wait_with_output()?)
     }
 }

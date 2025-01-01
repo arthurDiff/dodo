@@ -5,15 +5,17 @@ use crate::{
     text::{Color, Font},
 };
 
+// probably add something to specify as route/ path
 #[derive(Debug, Args)]
 pub struct AddArgs {
     /// name of the command
     name: String,
     /// command to be mapped to the name
     command: String,
+    #[arg(short, long, default_value_t = false)]
+    path: bool,
 }
 
-// Need ways to add multiple at once
 impl super::DoDoArgs for AddArgs {
     fn execute(&self) -> crate::Result<()> {
         self.add_commands(None)
@@ -71,6 +73,7 @@ mod tests {
             .map(|idx| AddArgs {
                 name: Word().fake::<String>() + &idx.to_string(),
                 command: format!("Export name=\"{}\"", Name().fake::<String>()),
+                path: false,
             })
             .collect::<Vec<AddArgs>>();
 
