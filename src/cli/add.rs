@@ -12,8 +12,9 @@ pub struct AddArgs {
     name: String,
     /// command to be mapped to the name
     command: String,
-    #[arg(short, long, default_value_t = false)]
-    path: bool,
+    /// indicate if command is path (supports relative or absolute)
+    #[arg(short = 'p', long = "path", default_value_t = false)]
+    is_path: bool,
 }
 
 impl super::DoDoArgs for AddArgs {
@@ -25,7 +26,21 @@ impl super::DoDoArgs for AddArgs {
 impl AddArgs {
     fn add_commands(&self, path: Option<&str>) -> crate::Result<()> {
         let mut commands = Commands::get(path)?;
-        commands.insert(self.name.clone(), self.command.clone());
+        let new_cmd = if self.is_path {
+            match std::path::Path::new(&self.command).canonicalize() {
+                Ok(ab_path) => ab_path.display().to_string(),
+                Err(err) => {
+                    eprintln!(
+                        "Failed generating absolute path with error: {}",
+                        err.to_string().red()
+                    );
+                    return Ok(());
+                }
+            }
+        } else {
+            self.command.clone()
+        };
+        commands.insert(self.name.clone(), new_cmd);
         match commands.set(path) {
             Ok(_) => println!(
                 "{} {}",
@@ -73,7 +88,7 @@ mod tests {
             .map(|idx| AddArgs {
                 name: Word().fake::<String>() + &idx.to_string(),
                 command: format!("Export name=\"{}\"", Name().fake::<String>()),
-                path: false,
+                is_path: false,
             })
             .collect::<Vec<AddArgs>>();
 
@@ -87,6 +102,34 @@ mod tests {
         for arg in &new_commands {
             assert_command_exists!(saved_command.get(&arg.name), arg.name, arg.command);
         }
+
+        std::fs::remove_file(test_file).unwrap_or_else(|e| {
+            panic!(
+                "Expected to cleanup testfile: {}, but got: {}",
+                test_file, e
+            )
+        });
+    }
+
+    #[test]
+    fn should_add_relative_path_correctly() {
+        let test_file = "dodo_test_add_command_2.json";
+        let path_arg = AddArgs {
+            command: "./".to_owned(),
+            name: "test".to_owned(),
+            is_path: true,
+        };
+
+        path_arg
+            .add_commands(Some(test_file))
+            .expect("Failed to create and add command to test file");
+
+        let cmds = Commands::get(Some(test_file)).expect("Failed to get test command file");
+        let test_ab_path = cmds
+            .get("test")
+            .expect("Failed to get newly added path command");
+
+        assert!(std::path::Path::new(test_ab_path).is_absolute());
 
         std::fs::remove_file(test_file).unwrap_or_else(|e| {
             panic!(
