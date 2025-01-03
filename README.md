@@ -31,3 +31,5 @@ I started this project because of one thing.
 "I don't want to type `git b -d ...` to clean out local branches."
 
 So this is a tool like **Make** that performs actions you specify but from global env.
+
+![Screenshot 2025-01-02 215504](https://github.com/user-attachments/assets/60dab542-d173-4aa0-8af1-61cc568d16ff)
