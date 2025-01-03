@@ -1,13 +1,11 @@
 use clap::{Parser, Subcommand};
 // internal
 use add::AddArgs;
-use bark::BarkArgs;
 use list::ListArgs;
 use remove::RemoveArgs;
 use run::RunArgs;
 
 mod add;
-mod bark;
 mod list;
 mod remove;
 mod run;
@@ -33,8 +31,6 @@ enum DoDoCommands {
     Remove(RemoveArgs),
     /// List saved commands
     List(ListArgs),
-    /// DoDo bark
-    Bark(BarkArgs),
 }
 
 //https://github.com/clap-rs/clap/discussions/3715
@@ -50,7 +46,6 @@ impl DoDo {
                 DoDoCommands::Add(add_args) => add_args.execute(),
                 DoDoCommands::Remove(remove_args) => remove_args.execute(),
                 DoDoCommands::List(list_args) => list_args.execute(),
-                DoDoCommands::Bark(bark_args) => bark_args.execute(),
             }
         } else {
             self.run_args.execute()
