@@ -29,10 +29,10 @@ pub(crate) struct RunArgs {
     run_async: bool,
     /// Log output while command is running (Default false)
     #[arg(short = 'l', long, default_value_t = false)]
-    log_while: bool,
+    log: bool,
     /// Log output on complete (Default false) | log_while will take precedence over log_output
-    #[arg(short = 'o', long, default_value_t = false)]
-    log_output: bool,
+    #[arg(short = 's', long, default_value_t = false)]
+    silent: bool,
 }
 
 impl super::DoDoArgs for RunArgs {
@@ -92,13 +92,13 @@ impl RunArgs {
     }
 
     fn run_command(&self, n: &str, cmd: &str, sinfo: shellinfo::ShellInfo, animate_piped: bool) {
-        match if self.log_while {
+        match if self.log {
             Self::run_command_inherited(n, cmd, sinfo)
         } else {
             Self::run_command_piped(n, cmd, sinfo, animate_piped)
         } {
             Ok(output) => {
-                if self.log_output && !self.log_while {
+                if !self.silent && !self.log {
                     println!(
                         "DoDo Command ({}) Ended with {}\n{}\n{}",
                         n.green(),

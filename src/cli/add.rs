@@ -27,7 +27,7 @@ impl AddArgs {
     fn add_commands(&self, path: Option<&str>) -> crate::Result<()> {
         let mut commands = Commands::get(path)?;
         let new_cmd = if self.is_path {
-            match std::path::Path::new(&self.command).canonicalize() {
+            match std::path::absolute(&self.command) {
                 Ok(ab_path) => ab_path.display().to_string(),
                 Err(err) => {
                     eprintln!(
