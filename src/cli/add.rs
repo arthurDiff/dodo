@@ -1,7 +1,7 @@
 use clap::Args;
 
 use crate::{
-    data::Commands,
+    data::{get_relative_to_bin_as_pathbuf, Commands},
     text::{Color, Font},
 };
 
@@ -15,6 +15,9 @@ pub(crate) struct AddArgs {
     /// indicate if command is path (supports relative or absolute)
     #[arg(short = 'p', long = "path", default_value_t = false)]
     is_path: bool,
+    /// copy specified path to binary folder
+    #[arg(short = 'c', long, default_value_t = false)]
+    copy_file: bool,
 }
 
 impl super::DoDoArgs for AddArgs {
@@ -28,7 +31,40 @@ impl AddArgs {
         let mut commands = Commands::get(path)?;
         let new_cmd = if self.is_path {
             match std::path::absolute(&self.command) {
-                Ok(ab_path) => ab_path.display().to_string(),
+                Ok(ab_path) => {
+                    let mut file_path = ab_path;
+                    let file_name = file_path
+                        .file_name()
+                        .expect("Failed should have contained filename from canonicalization.")
+                        .to_str()
+                        .expect(
+                            "Failed to stringify file name should be valid from canonicalization.",
+                        );
+                    if self.copy_file {
+                        if let Ok(store_path) = get_relative_to_bin_as_pathbuf(file_name) {
+                            match std::fs::copy(&file_path, &store_path) {
+                                Ok(_) => {
+                                    println!("File {} Copied Successfully", file_name.green());
+                                    file_path = store_path;
+                                }
+                                Err(err) => {
+                                    eprintln!(
+                                        "Failed to copy file at {} with error: {}",
+                                        file_path.display().to_string().yellow(),
+                                        err.to_string().red()
+                                    );
+                                }
+                            }
+                        } else {
+                            println!(
+                                "Failed to copy file at {}, will use provided path as destination.",
+                                file_path.display().to_string().red()
+                            );
+                        };
+                    }
+                    // keeping unix path def
+                    file_path.display().to_string().replace("\\", "/")
+                }
                 Err(err) => {
                     eprintln!(
                         "Failed generating absolute path with error: {}",
@@ -42,11 +78,13 @@ impl AddArgs {
         };
         commands.insert(self.name.clone(), new_cmd);
         match commands.set(path) {
-            Ok(_) => println!(
-                "{} {}",
-                "New command has been added (Try):".green(),
-                format!("dodo run {}", self.name).bold()
-            ),
+            Ok(_) => {
+                println!(
+                    "{} {}",
+                    "New command has been added (Try):".green(),
+                    format!("dodo run {}", self.name).underline()
+                );
+            }
             Err(err) => eprintln!(
                 "Failed adding new command with error: {}",
                 err.to_string().red()
@@ -89,6 +127,7 @@ mod tests {
                 name: Word().fake::<String>() + &idx.to_string(),
                 command: format!("Export name=\"{}\"", Name().fake::<String>()),
                 is_path: false,
+                copy_file: false,
             })
             .collect::<Vec<AddArgs>>();
 
@@ -120,6 +159,7 @@ mod tests {
             command: "./".to_owned(),
             name: "test".to_owned(),
             is_path: true,
+            copy_file: false,
         };
 
         path_arg

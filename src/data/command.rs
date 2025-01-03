@@ -3,19 +3,19 @@ use super::DoDoData;
 const DEFAULT_COMMAND_FILE_PATH: &str = "dodo_commands.json";
 
 #[derive(Debug, Default, serde::Serialize, serde::Deserialize)]
-pub(crate) struct Commands(std::collections::HashMap<String, String>);
+pub struct Commands(std::collections::HashMap<String, String>);
 
 impl Commands {
     /// If None will use default path
     pub fn get(path: Option<&str>) -> crate::Result<Self> {
-        Self::read(&get_relative_to_bin(
+        Self::read(&super::get_relative_to_bin(
             path.unwrap_or(DEFAULT_COMMAND_FILE_PATH),
         )?)
     }
 
     /// If None will use default path
     pub fn set(&self, path: Option<&str>) -> crate::Result<()> {
-        self.write(&get_relative_to_bin(
+        self.write(&super::get_relative_to_bin(
             path.unwrap_or(DEFAULT_COMMAND_FILE_PATH),
         )?)
     }
@@ -37,14 +37,6 @@ impl std::ops::DerefMut for Commands {
     }
 }
 
-pub fn get_relative_to_bin(path: &str) -> crate::Result<String> {
-    let mut exe_path = std::env::current_exe()?
-        .parent()
-        .expect("Failed to get parent dir of binary")
-        .to_path_buf();
-    exe_path.push(path);
-    Ok(std::path::absolute(&exe_path)?.display().to_string())
-}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -76,6 +68,6 @@ mod tests {
         }
 
         // cleanup
-        std::fs::remove_file(get_relative_to_bin(test_file_path).unwrap()).unwrap();
+        std::fs::remove_file(super::super::get_relative_to_bin(test_file_path).unwrap()).unwrap();
     }
 }

@@ -125,6 +125,11 @@ impl RunArgs {
         sinfo: shellinfo::ShellInfo,
         animate: bool,
     ) -> crate::Result<std::process::Output> {
+        let command = if sinfo.0 == "bash" && command.starts_with("C:") {
+            &command.replace("C:", "/mnt/c")
+        } else {
+            command
+        };
         let mut proc = Command::new(sinfo.0)
             .arg(sinfo.1)
             .arg(command)
@@ -136,13 +141,13 @@ impl RunArgs {
             let mut idx = 0;
             let mut start_inst = Instant::now();
             while proc.try_wait().is_ok_and(|p| p.is_none()) {
+                std::io::stdout().flush()?;
                 print!(
                     "DoDo Command ({}) Running {}\r",
                     name.green(),
                     // just gonna slow down by deviding instead delaying framerate
                     LOADING_CHAR[idx % 28]
                 );
-                std::io::stdout().flush()?;
                 let duration_since = Instant::now().duration_since(start_inst);
                 if Duration::from_millis(FRAME_DELAY) > duration_since {
                     std::thread::sleep(Duration::from_millis(FRAME_DELAY) - duration_since)
@@ -163,6 +168,11 @@ impl RunArgs {
         command: &str,
         sinfo: shellinfo::ShellInfo,
     ) -> crate::Result<std::process::Output> {
+        let command = if sinfo.0 == "bash" && command.starts_with("C:") {
+            &command.replace("C:", "/mnt/c")
+        } else {
+            command
+        };
         println!("DoDo Command ({}) Running...", name.green());
         Ok(Command::new(sinfo.0)
             .arg(sinfo.1)

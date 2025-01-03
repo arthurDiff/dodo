@@ -1,4 +1,4 @@
-use std::io::Write;
+use std::{io::Write, path::PathBuf};
 
 // Initial Impl using Json
 mod command;
@@ -43,4 +43,17 @@ where
             Err(crate::Error::IOError(err))
         }
     }
+}
+
+pub fn get_relative_to_bin(path: &str) -> crate::Result<String> {
+    Ok(get_relative_to_bin_as_pathbuf(path)?.display().to_string())
+}
+
+pub fn get_relative_to_bin_as_pathbuf(path: &str) -> crate::Result<PathBuf> {
+    let mut exe_path = std::env::current_exe()?
+        .parent()
+        .expect("Failed to get parent dir of binary")
+        .to_path_buf();
+    exe_path.push(path);
+    Ok(std::path::absolute(&exe_path)?)
 }
