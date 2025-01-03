@@ -25,3 +25,9 @@ a8"    `y88 a8"     "8a a8"    `y88 a8"     "8a   |::; | | ; ; |      |
 "8a,   ,d88 "8a,   ,a8" "8a,   ,d88 "8a,   ,a8"  /'-=-'`  '-'   '--'-   \
  `"8bbdp"y8  `"ybbdp"'   `"8bbdp"y8  `"ybbdp"'  /                        \
 ```
+
+I started this project because of one thing.
+
+"I don't want to type `git b -d ...` to clean out local branches."
+
+So this is a tool like **Make** that performs actions you specify but from global env.
