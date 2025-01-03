@@ -6,7 +6,7 @@ use crate::{
 };
 
 #[derive(Debug, Args)]
-pub struct RemoveArgs {
+pub(crate) struct RemoveArgs {
     #[arg(num_args=1.., use_value_delimiter=true, value_delimiter=' ', required = true )]
     names: Vec<String>,
 }

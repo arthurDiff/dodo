@@ -4,7 +4,7 @@ use crate::text::{Color, Font};
 
 // add optional arg to export command file
 #[derive(Debug, Args)]
-pub struct ListArgs;
+pub(crate) struct ListArgs;
 
 impl super::DoDoArgs for ListArgs {
     fn execute(&self) -> crate::Result<()> {

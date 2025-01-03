@@ -19,6 +19,7 @@ serde_json = { version = "1.0.134", default-features = false, features = [
 sysinfo = { version = "0.33.1", default-features = false, features = [
   "system",
 ] }
+winapi = { version = "0.3.9", default-features = false, features = ["winuser"] }
 
 [dev-dependencies]
 fake = "3.1.0"

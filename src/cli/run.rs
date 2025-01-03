@@ -21,7 +21,7 @@ const LOADING_CHAR: [char; 28] = [
 
 // need output log func (need to access child process for stio)
 #[derive(Debug, Args)]
-pub struct RunArgs {
+pub(crate) struct RunArgs {
     /// Names of space seperated commands to run
     names: Vec<String>,
     /// Run commands asynchronously (Default false)

@@ -7,7 +7,7 @@ use crate::{
 
 // probably add something to specify as route/ path
 #[derive(Debug, Args)]
-pub struct AddArgs {
+pub(crate) struct AddArgs {
     /// name of the command
     name: String,
     /// command to be mapped to the name
