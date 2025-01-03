@@ -1,7 +1,10 @@
 [package]
 name = "dodo"
-version = "0.2.0"
+version = "0.1.0"
 edition = "2021"
+
+[[bin]]
+name = "dodo"
 
 [dependencies]
 clap = { version = "4.5.23", default-features = false, features = [
