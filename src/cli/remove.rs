@@ -77,12 +77,14 @@ mod tests {
             );
         }
 
-        std::fs::remove_file(test_file).unwrap_or_else(|e| {
-            panic!(
-                "Expected to cleanup testfile: {}, but got: {}",
-                test_file, e
-            )
-        });
+        std::fs::remove_file(crate::data::get_relative_to_bin(test_file).unwrap()).unwrap_or_else(
+            |e| {
+                panic!(
+                    "Expected to cleanup testfile: {}, but got: {}",
+                    test_file, e
+                )
+            },
+        );
     }
 
     fn create_test_commands(test_file: &str) -> (Commands, Vec<String>) {

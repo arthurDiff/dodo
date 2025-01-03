@@ -103,12 +103,14 @@ mod tests {
             assert_command_exists!(saved_command.get(&arg.name), arg.name, arg.command);
         }
 
-        std::fs::remove_file(test_file).unwrap_or_else(|e| {
-            panic!(
-                "Expected to cleanup testfile: {}, but got: {}",
-                test_file, e
-            )
-        });
+        std::fs::remove_file(crate::data::get_relative_to_bin(test_file).unwrap()).unwrap_or_else(
+            |e| {
+                panic!(
+                    "Expected to cleanup testfile: {}, but got: {}",
+                    test_file, e
+                )
+            },
+        );
     }
 
     #[test]
@@ -131,11 +133,13 @@ mod tests {
 
         assert!(std::path::Path::new(test_ab_path).is_absolute());
 
-        std::fs::remove_file(test_file).unwrap_or_else(|e| {
-            panic!(
-                "Expected to cleanup testfile: {}, but got: {}",
-                test_file, e
-            )
-        });
+        std::fs::remove_file(crate::data::get_relative_to_bin(test_file).unwrap()).unwrap_or_else(
+            |e| {
+                panic!(
+                    "Expected to cleanup testfile: {}, but got: {}",
+                    test_file, e
+                )
+            },
+        );
     }
 }
