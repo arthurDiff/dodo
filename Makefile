@@ -16,3 +16,5 @@ format:
 	cargo fmt
 audit:
 	cargo audit
+sayhi:
+	echo helloworld

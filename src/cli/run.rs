@@ -33,6 +33,9 @@ pub(crate) struct RunArgs {
     /// Log output on complete (Default false) | log_while will take precedence over log_output
     #[arg(short = 's', long, default_value_t = false)]
     silent: bool,
+    /// Passed args will be applied to all commands running
+    #[arg(last = true)]
+    passed_args: Vec<String>,
 }
 
 impl super::DoDoArgs for RunArgs {
@@ -92,6 +95,11 @@ impl RunArgs {
     }
 
     fn run_command(&self, n: &str, cmd: &str, sinfo: shellinfo::ShellInfo, animate_piped: bool) {
+        let cmd = if !self.passed_args.is_empty() {
+            &(cmd.to_string() + " " + &self.passed_args.join(" "))
+        } else {
+            cmd
+        };
         match if self.log {
             Self::run_command_inherited(n, cmd, sinfo)
         } else {
@@ -130,6 +138,7 @@ impl RunArgs {
         } else {
             command
         };
+
         let mut proc = Command::new(sinfo.0)
             .arg(sinfo.1)
             .arg(command)

@@ -25,12 +25,42 @@ impl RemoveArgs {
             .names
             .iter()
             .filter(|n| {
-                if commands.remove(*n).is_none() {
-                    println!("DoDo commands doesn't contain: {}", n.yellow().bold());
-                    false
-                } else {
-                    println!("DoDo successfully removed command: {}", n.yellow().bold());
-                    true
+                match commands.remove(*n) {
+                    Some(val) => {
+                        let cmd_path = std::path::Path::new(&val);
+
+                        let Some(parent_path) = cmd_path.parent() else {
+                            println!("DoDo successfully removed command: {}", n.yellow().bold());
+                            return true;
+                        };
+
+                        let Ok(bin_root) = crate::data::get_relative_to_bin_as_pathbuf(".") else {
+                            println!("DoDo successfully removed command: {}", n.yellow().bold());
+                            return true;
+                        };
+
+                        if parent_path == bin_root {
+                            match std::fs::remove_file(cmd_path) {
+                                Ok(_) => {
+                                    println!(
+                                        "DoDo successfully removed command and copied file: {}",
+                                        cmd_path.display().to_string().yellow().bold()
+                                    );
+                                }
+                                Err(err) => {
+                                    println!("DoDo successfully removed command: {}\nbut fail deleting copied with error: {}", cmd_path.display().to_string().yellow().bold(), err.to_string().red())
+                                }
+                            }
+                            return true
+                        }
+
+                        println!("DoDo successfully removed command: {}", n.yellow().bold());
+                        true
+                    }
+                    None => {
+                        println!("DoDo commands doesn't contain: {}", n.yellow().bold());
+                        false
+                    }
                 }
             })
             .count()
