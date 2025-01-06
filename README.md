@@ -32,4 +32,5 @@ I started this project because of one thing.
 
 So this is a tool like **Make** that performs actions you specify but from global env.
 
-![Screenshot 2025-01-02 215504](https://github.com/user-attachments/assets/60dab542-d173-4aa0-8af1-61cc568d16ff)
+![image](https://github.com/user-attachments/assets/e921fed7-c87d-4172-99a1-545b2efe71b8)
+
