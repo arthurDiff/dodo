@@ -13,7 +13,7 @@ mod run;
 //https://docs.rs/clap/latest/clap/_derive/index.html
 #[derive(Debug, Parser)]
 #[command(name = "dodo")]
-#[command(version)]
+#[command(version, disable_help_subcommand = true)]
 pub struct DoDo {
     #[command(subcommand)]
     dodo: Option<DoDoCommands>,

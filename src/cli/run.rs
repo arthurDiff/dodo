@@ -44,7 +44,7 @@ impl super::DoDoArgs for RunArgs {
             println!(
                 "Requires at least one command to run!\nIf you need help try: {} or {}",
                 "dodo list".yellow(),
-                "dodo help".yellow()
+                "dodo -h".yellow()
             );
             return Ok(());
         }
